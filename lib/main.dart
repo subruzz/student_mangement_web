@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:studentmanagement/firebase_options.dart';
 import 'package:studentmanagement/screens/home_screen.dart';
 import 'package:studentmanagement/screens/login_screen.dart';
+import 'package:studentmanagement/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: lightTheme,
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {

@@ -1,5 +1,8 @@
+import 'package:intl/intl.dart';
+
 class StudentDetails {
-  final int? id;
+  final String uid;
+  final String sid;
   final String name;
   final int age;
   final String batch;
@@ -11,7 +14,8 @@ class StudentDetails {
   final DateTime dob;
 
   StudentDetails({
-    this.id,
+    required this.uid,
+    required this.sid,
     required this.parentName,
     required this.name,
     required this.age,
@@ -28,10 +32,11 @@ class StudentDetails {
       'name': name,
       'age': age,
       'batch': batch,
+      'parentName': parentName,
       'address': address,
       'contactNumber': contactNumber,
       'emailAddress': emailAddress,
-      'dob': dob.toIso8601String(),
+      'dob': DateFormat.yMd().format(dob),
       'profilePicture': profilePicture,
     };
   }

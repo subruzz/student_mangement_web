@@ -7,7 +7,7 @@ import 'package:studentmanagement/screens/login_screen.dart';
 import 'package:studentmanagement/widgets/auth_button.dart';
 import 'package:studentmanagement/widgets/auth_toggle.dart';
 
-import 'package:studentmanagement/widgets/textfield.dart';
+import 'package:studentmanagement/widgets/helping-widgets/auth_textfield.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key, required this.type});

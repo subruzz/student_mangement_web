@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:studentmanagement/widgets/form.dart';
+import 'package:studentmanagement/widgets/helping-widgets/form.dart';
 import 'package:studentmanagement/widgets/signup_image.dart';
 import 'package:studentmanagement/widgets/welcome_text.dart';
 
