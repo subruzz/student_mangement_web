@@ -1,0 +1,34 @@
+import 'package:flutter/material.dart';
+import 'package:studentmanagement/widgets/form.dart';
+import 'package:studentmanagement/widgets/signup_image.dart';
+import 'package:studentmanagement/widgets/welcome_text.dart';
+
+class MobileSignup extends StatelessWidget {
+  const MobileSignup({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(15.0),
+          child: Column(
+            children: [
+              WelcomeText(
+                text1: 'Welcome, New User!\n',
+                text2: 'Start exploring our app and discover amazing features!',
+              ),
+              SizedBox(height: 20),
+              SignUpImage(
+                height: 300,
+                width: 300,
+                image: 'assets/images/signup_image.json',
+              ),
+              LoginForm(type: 'type'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
