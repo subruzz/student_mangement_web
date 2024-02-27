@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class StudentDetails {
@@ -11,10 +12,11 @@ class StudentDetails {
   final String emailAddress;
   final String? profilePicture;
   final String parentName;
-  final DateTime dob;
+  final Timestamp timeStamp;
 
   StudentDetails({
     required this.uid,
+    required this.timeStamp,
     required this.sid,
     required this.parentName,
     required this.name,
@@ -24,19 +26,19 @@ class StudentDetails {
     required this.contactNumber,
     required this.emailAddress,
     required this.profilePicture,
-    required this.dob,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'name': name,
+      'tid':uid,
       'age': age,
       'batch': batch,
       'parentName': parentName,
       'address': address,
+      'timeStamp': timeStamp,
       'contactNumber': contactNumber,
       'emailAddress': emailAddress,
-      'dob': DateFormat.yMd().format(dob),
       'profilePicture': profilePicture,
     };
   }

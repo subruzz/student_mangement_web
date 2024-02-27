@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:studentmanagement/responsive/add_student.dart';
+import 'package:studentmanagement/responsive/responsive_widget.dart';
+import 'package:studentmanagement/screens/login_screen.dart';
+import 'package:studentmanagement/widgets/desktop-widgets/desktop_student_display.dart';
+import 'package:studentmanagement/widgets/mobile-widgets/mobile_display_student.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.email});
@@ -12,11 +16,55 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  void logout() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(
+                  Icons.close,
+                  color: Colors.red,
+                ),
+              ),
+              IconButton(
+                  onPressed: () {
+                    _signOut().then((value) => Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                          (route) => false,
+                        ));
+                  },
+                  icon: const Icon(
+                    Icons.check,
+                    color: Colors.green,
+                  )),
+            ],
+          )
+        ],
+        title: const Text(
+          'Are you sure you want to logout?',
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.normal, fontSize: 18),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
   final CollectionReference students =
       FirebaseFirestore.instance.collection('studentCollection');
-  deleteStudent(String id) {
-    students.doc(id).delete();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +73,11 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (ctx) => const AddDetails()),
+            MaterialPageRoute(
+                builder: (ctx) => const AddDetails(
+                      student: null,
+                      studentId: null,
+                    )),
           );
         },
         child: const Icon(Icons.add),
@@ -48,85 +100,42 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.black,
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              logout();
+            },
             icon: const Icon(Icons.logout),
             color: Colors.black,
           )
         ],
       ),
       body: StreamBuilder(
-        stream: students.snapshots(),
-        builder: (context, snapshot) {
+        stream: students
+            .where('tid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+            // .orderBy('timeStamp', descending: true)
+            .snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
           if (snapshot.hasData) {
-            return GridView.builder(
-              padding: const EdgeInsets.all(20),
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 400,
-                  crossAxisSpacing: 8.0,
-                  mainAxisSpacing: 8.0,
-                  childAspectRatio: 1.5),
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                final DocumentSnapshot studentSnap = snapshot.data!.docs[index];
-                print(studentSnap);
-                return Flexible(
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          const CircleAvatar(
-                            radius: 60,
-                            backgroundImage: AssetImage(
-                                'assets/images/login_image_3bd54d0c.png'),
-                          ),
-                          const SizedBox(width: 30),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                studentSnap['name'],
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                              Text(
-                                studentSnap['batch'],
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                          // Use Spacer to push the IconButton widgets to the right
-                          Spacer(),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.edit),
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.delete),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-
-              },
-            );
+            return snapshot.data!.docs.isEmpty
+                ? const Center(
+                    child: Text('No Student Record found '),
+                  )
+                : ResponiveLayout(
+                    desktop:
+                        DesktopDisplayStudents(student: snapshot.data!.docs),
+                    tablet:
+                        DesktopDisplayStudents(student: snapshot.data!.docs),
+                    mobile: MobileDisplayStudents(
+                      student: snapshot.data!.docs,
+                    ));
           }
-          return const Text('no data found');
+          return const Center(
+            child: Text('No Student Record found '),
+          );
         },
       ),
     );

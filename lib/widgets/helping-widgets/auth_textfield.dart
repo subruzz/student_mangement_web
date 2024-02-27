@@ -16,8 +16,10 @@ class LoginTextfields extends StatelessWidget {
         maxWidth: 400,
       ),
       child: TextFormField(
+        style: Theme.of(context).textTheme.labelLarge,
         controller: controller,
         decoration: InputDecoration(
+          labelStyle: Theme.of(context).textTheme.labelLarge,
           prefixIcon: Icon(icon),
           labelText: fieldName,
           hintText: fieldName,

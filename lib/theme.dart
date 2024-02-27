@@ -33,7 +33,7 @@ final lightTheme = ThemeData(
     labelLarge: TextStyle(
       fontSize: 16,
       color: Colors.black,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w400,
       fontFamily: 'Montserrat', // Example of using the built-in 'Roboto' font
     ),
     labelMedium: TextStyle(
