@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:studentmanagement/models/services.dart';
+import 'package:studentmanagement/services/auth_service.dart';
 import 'package:studentmanagement/screens/home_screen.dart';
-
 import 'package:studentmanagement/screens/signup_screen.dart';
 import 'package:studentmanagement/screens/login_screen.dart';
-import 'package:studentmanagement/widgets/auth_button.dart';
-import 'package:studentmanagement/widgets/auth_toggle.dart';
-
+import 'package:studentmanagement/widgets/helping-widgets/auth_button.dart';
+import 'package:studentmanagement/widgets/helping-widgets/auth_toggle.dart';
 import 'package:studentmanagement/widgets/helping-widgets/auth_textfield.dart';
 
 class LoginForm extends StatefulWidget {
@@ -24,17 +22,7 @@ class _MyTextfieldsState extends State<LoginForm> {
   final _signupUsernameController = TextEditingController();
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
-  // @override
-  // void dispose() {
-  //   _userNameController.dispose();
 
-  //   _passwordController.dispose();
-
-  //   _emailController.dispose();
-
-  //   print(_emailController.text);
-  //   super.dispose();
-  // }
   void _registerUser() async {
     setState(() {
       _isLoading = true;
@@ -75,46 +63,14 @@ class _MyTextfieldsState extends State<LoginForm> {
 
   void goToHomeScreen() {
     Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (ctx) => const HomeScreen(email: 'd')));
+        MaterialPageRoute(builder: (ctx) => const HomeScreen()));
   }
 
-  // Uint8List? _pickedImage;
-  // void _selectImage() async {
-  //   Uint8List? image = await pickImage(ImageSource.gallery);
-  //   if (image != null) {
-  //     setState(() {
-  //       _pickedImage = image;
-  //     });
-  //   }
-  // }
   void showSnackBar(String msg) {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
-  // UserModel usermodel = UserModel(
-  //     userName: _signupUsernameController.text.trim(),
-  //     email: _signupEmailController.text.trim(),
-  //     password: _signupPasswordController.text.trim(),
-  //     status: 1,
-  //     createdAt: DateTime.now());
-  // try {
-  //   final userData = await AuthServices.registerUser(usermodel);
-  //   if (userData != null) {
-  //     if (context.mounted) {
-  //       Navigator.push(
-  //           context,
-  //           MaterialPageRoute(
-  //               builder: (ctx) => HomeScreen(email: userData.user!.email!)));
-  //     }
-  //   }
-  // } on FirebaseAuthException catch (e) {
-  //   List err = e.toString().split(']');
-  //   if (context.mounted) {
-  //     ScaffoldMessenger.of(context)
-  //         .showSnackBar(SnackBar(content: Text(err[1])));
-  //   }
-  // }
   @override
   Widget build(BuildContext context) {
     return Form(

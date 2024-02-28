@@ -1,62 +1,42 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:studentmanagement/responsive/add_student.dart';
-import 'package:studentmanagement/responsive/responsive_widget.dart';
+import 'package:studentmanagement/screens/add_student.dart';
+import 'package:studentmanagement/utils/responsive/responsive_widget.dart';
 import 'package:studentmanagement/screens/login_screen.dart';
-import 'package:studentmanagement/widgets/desktop-widgets/desktop_student_display.dart';
+import 'package:studentmanagement/screens/search_user.dart';
+import 'package:studentmanagement/widgets/desktop-widgets/desktop_screens/desktop_student_display.dart';
+import 'package:studentmanagement/widgets/helping-widgets/dialog.dart';
 import 'package:studentmanagement/widgets/mobile-widgets/mobile_display_student.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.email});
-  final String email;
+  const HomeScreen({
+    super.key,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _overayController = OverlayPortalController();
+  List<DocumentSnapshot> foundStudents = [];
+
   void logout() {
     showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.red,
-                ),
-              ),
-              IconButton(
-                  onPressed: () {
-                    _signOut().then((value) => Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                          (route) => false,
-                        ));
-                  },
-                  icon: const Icon(
-                    Icons.check,
-                    color: Colors.green,
-                  )),
-            ],
-          )
-        ],
-        title: const Text(
-          'Are you sure you want to logout?',
-          style: TextStyle(
-              color: Colors.black, fontWeight: FontWeight.normal, fontSize: 18),
-        ),
-      ),
-    );
+        context: context,
+        builder: (ctx) => CustomDialog(
+              title: 'Are you sure you want to logout?',
+              onClick: () {
+                _signOut().then((value) => Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginPage(),
+                      ),
+                      (route) => false,
+                    ));
+              },
+            ));
   }
 
   Future<void> _signOut() async {
@@ -92,12 +72,23 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              // setState(() {
-              //   isScreen = !isScreen;
-              // });
+              showGeneralDialog(
+                context: context,
+                barrierColor: Colors.black54,
+                barrierDismissible: true,
+                barrierLabel: 'Label',
+                pageBuilder: (_, __, ___) {
+                  return Align(
+                    alignment: Alignment.centerRight,
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width / 3,
+                      child: SearchUser(student: foundStudents),
+                    ),
+                  );
+                },
+              );
             },
-            icon: const Icon(Icons.grid_view),
-            color: Colors.black,
+            icon: const Icon(Icons.search),
           ),
           IconButton(
             onPressed: () {
@@ -120,6 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           }
           if (snapshot.hasData) {
+            foundStudents = snapshot.data!.docs;
             return snapshot.data!.docs.isEmpty
                 ? const Center(
                     child: Text('No Student Record found '),

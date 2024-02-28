@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:studentmanagement/firebase_options.dart';
 import 'package:studentmanagement/screens/home_screen.dart';
 import 'package:studentmanagement/screens/login_screen.dart';
-import 'package:studentmanagement/theme.dart';
+import 'package:studentmanagement/utils/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
             if (snapshot.hasData) {
-              return const HomeScreen(email: 'email');
+              return const HomeScreen();
             } else if (snapshot.hasError) {
               return Center(
                 child: Text(snapshot.error.toString()),
