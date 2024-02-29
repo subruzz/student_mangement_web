@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studentmanagement/screens/forgot_password.dart';
 import 'package:studentmanagement/services/auth_service.dart';
 import 'package:studentmanagement/screens/home_screen.dart';
 import 'package:studentmanagement/screens/signup_screen.dart';
@@ -27,6 +28,7 @@ class _MyTextfieldsState extends State<LoginForm> {
     setState(() {
       _isLoading = true;
     });
+
     final String res = await AuthServices.signupUser(
         email: _signupEmailController.text.trim(),
         password: _signupPasswordController.text.trim(),
@@ -62,13 +64,23 @@ class _MyTextfieldsState extends State<LoginForm> {
   }
 
   void goToHomeScreen() {
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (ctx) => const HomeScreen()));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (ctx) => const HomeScreen()));
   }
 
   void showSnackBar(String msg) {
     ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        padding: const EdgeInsets.all(10),
+        elevation: 4,
+        backgroundColor: Colors.red,
+        content: Text(
+          msg.split(']').last,
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge!
+              .copyWith(color: Colors.white),
+        )));
   }
 
   @override
@@ -83,11 +95,6 @@ class _MyTextfieldsState extends State<LoginForm> {
           const SizedBox(
             height: 20,
           ),
-          // if (widget.type != 'login')
-          //   ChooseImage(
-          //     pickImage: _selectImage,
-          //     image: _pickedImage,
-          //   ),
           const SizedBox(
             height: 10,
           ),
@@ -119,7 +126,12 @@ class _MyTextfieldsState extends State<LoginForm> {
           ),
           if (widget.type == 'login')
             TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (ctx) => ForgotPasswordPage()));
+                },
                 child: const Text(
                   'Forgot Password?',
                   style: TextStyle(color: Colors.blue),
@@ -131,7 +143,11 @@ class _MyTextfieldsState extends State<LoginForm> {
               isLoading: _isLoading,
               text: widget.type == 'login' ? 'Log In' : 'Sign Up',
               authCheck: widget.type == 'login'
-                  ? loginUser
+                  ? () async {
+                      if (_formKey.currentState!.validate()) {
+                        loginUser();
+                      }
+                    }
                   : () async {
                       if (_formKey.currentState!.validate()) {
                         _registerUser();

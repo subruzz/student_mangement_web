@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:studentmanagement/screens/add_student.dart';
 import 'package:studentmanagement/screens/student_details.dart';
+import 'package:studentmanagement/services/student_services.dart';
+import 'package:studentmanagement/widgets/helping-widgets/dialog.dart';
 
 class MobileDisplayStudents extends StatelessWidget {
   const MobileDisplayStudents({Key? key, required this.student})
@@ -17,47 +20,71 @@ class MobileDisplayStudents extends StatelessWidget {
         final DocumentSnapshot studentSnap = student[index];
         return Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.white, // Set background color
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5), // Set shadow color
-                  spreadRadius: 3, // Set spread radius
-                  blurRadius: 5, // Set blur radius
-                  offset:const  Offset(0, 4), // Set offset
-                ),
-              ],
+          child: Dismissible(
+            direction: DismissDirection.endToStart,
+            key: ValueKey(studentSnap.id),
+            background: Container(
+              color: Colors.red,
+              child: const Icon(
+                Icons.delete,
+                color: Colors.white,
+                size: 36,
+              ),
             ),
-            child: ListTile(
-              onTap: () {
-                StudentDetailsPage(student: studentSnap[index]);
-              },
-              leading: CircleAvatar(
-                radius: 30,
-                backgroundImage: studentSnap['profilePicture'].isEmpty
-                    ? const AssetImage('assets/images/profile.png')
-                    : NetworkImage(studentSnap['profilePicture'])
-                        as ImageProvider<Object>,
-              ),
-              title: Text(
-                studentSnap['name'],
-                maxLines: 2,
-                style: Theme.of(context).textTheme.labelMedium,
-                overflow: TextOverflow.ellipsis,
-              ),
-              subtitle: Text(
-                'batch:${studentSnap['batch']}',
-                style: Theme.of(context).textTheme.labelSmall,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              trailing: IconButton(
-                onPressed: () {
-                  // Handle more options
+            confirmDismiss: (direction) {
+              return showDialog(
+                context: context,
+                builder: (ctx) => CustomDialog(
+                  title: 'Are you sure you want to delete this student?',
+                  onClick: () {
+                    StudentServices.deleteStudent(student[index].id);
+                  },
+                ),
+              );
+            },
+            child: Card(
+              elevation: 5,
+              child: ListTile(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (ctx) =>
+                              StudentDetailsPage(student: studentSnap)));
                 },
-                icon: const Icon(Icons.more_vert_rounded),
+                contentPadding: const EdgeInsets.all(0),
+                leading: studentSnap['profilePicture'].isEmpty
+                    ? const CircleAvatar(
+                        radius: 60,
+                        backgroundImage:
+                            AssetImage('assets/images/profile.png'),
+                      )
+                    : CircleAvatar(
+                        radius: 60,
+                        backgroundImage:
+                            NetworkImage(studentSnap['profilePicture']),
+                      ),
+                title: Text(
+                  studentSnap['name'],
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+                subtitle: Text(
+                  studentSnap['batch'],
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelSmall!
+                      .copyWith(color: Colors.grey),
+                ),
+                trailing: IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (ctx) => AddDetails(
+                                  studentId: studentSnap.id,
+                                  student: studentSnap)));
+                    },
+                    icon: const Icon(Icons.edit)),
               ),
             ),
           ),

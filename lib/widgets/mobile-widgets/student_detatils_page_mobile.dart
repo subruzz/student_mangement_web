@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:studentmanagement/services/student_services.dart';
+import 'package:studentmanagement/widgets/helping-widgets/dialog.dart';
 import 'package:studentmanagement/widgets/helping-widgets/student_details_item.dart';
 
 class StudenDetailMobile extends StatefulWidget {
@@ -27,7 +29,16 @@ class _DetailedStudetntState extends State<StudenDetailMobile> {
         actions: [
           IconButton(
               onPressed: () {
-                // removeStudent(widget.student.id!, context);
+                showDialog(
+                  context: context,
+                  builder: (ctx) => CustomDialog(
+                    title: 'Are you sure you want to delete this student?',
+                    onClick: () {
+                      StudentServices.deleteStudent(widget.student.id)
+                          .then((value) => Navigator.pop(context));
+                    },
+                  ),
+                );
               },
               icon: const Icon(
                 Icons.delete,
@@ -86,17 +97,19 @@ class _DetailedStudetntState extends State<StudenDetailMobile> {
                           const SizedBox(
                             width: 30,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                widget.student['name'],
-                              ),
-                              Text(
-                                widget.student['batch'],
-                              ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(widget.student['name'],
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall),
+                                Text(widget.student['batch'],
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall),
+                              ],
+                            ),
                           )
                         ],
                       ),
@@ -126,7 +139,7 @@ class _DetailedStudetntState extends State<StudenDetailMobile> {
                           'Contact Details',
                           style: TextStyle(
                               color: Colors.black54,
-                              fontSize: 22,
+                              fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -175,7 +188,7 @@ class _DetailedStudetntState extends State<StudenDetailMobile> {
                           'Personal Details',
                           style: TextStyle(
                               color: Colors.black54,
-                              fontSize: 22,
+                              fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
                       ],

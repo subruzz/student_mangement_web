@@ -19,7 +19,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _overayController = OverlayPortalController();
   List<DocumentSnapshot> foundStudents = [];
 
   void logout() {
@@ -28,13 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (ctx) => CustomDialog(
               title: 'Are you sure you want to logout?',
               onClick: () {
-                _signOut().then((value) => Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
-                      ),
-                      (route) => false,
-                    ));
+                _signOut();
               },
             ));
   }
@@ -81,7 +74,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Align(
                     alignment: Alignment.centerRight,
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width / 3,
+                      width: MediaQuery.of(context).size.width >= 600
+                          ? MediaQuery.of(context).size.width / 3
+                          : MediaQuery.of(context).size.width,
                       child: SearchUser(student: foundStudents),
                     ),
                   );
@@ -102,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: StreamBuilder(
         stream: students
             .where('tid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-            // .orderBy('timeStamp', descending: true)
+            // .orderBy('timestamp', descending: true)
             .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -113,8 +108,17 @@ class _HomeScreenState extends State<HomeScreen> {
           if (snapshot.hasData) {
             foundStudents = snapshot.data!.docs;
             return snapshot.data!.docs.isEmpty
-                ? const Center(
-                    child: Text('No Student Record found '),
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/images/nodata.avif',
+                          width: 400,
+                        ),
+                        const Text('No Student Record found '),
+                      ],
+                    ),
                   )
                 : ResponiveLayout(
                     desktop:
@@ -125,8 +129,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       student: snapshot.data!.docs,
                     ));
           }
-          return const Center(
-            child: Text('No Student Record found '),
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/nodata.avif',
+                  width: 400,
+                ),
+                const Text('No Student Record found '),
+              ],
+            ),
           );
         },
       ),

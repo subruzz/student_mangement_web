@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:studentmanagement/models/student_details.dart';
 import 'package:studentmanagement/services/storage_service.dart';
 import 'package:uuid/uuid.dart';
@@ -20,15 +21,14 @@ class StudentServices {
       required String email,
       required int number,
       required Uint8List? profilePic}) async {
+    String studentId = const Uuid().v1();
+
     try {
       String imgUrl = '';
       if (profilePic != null) {
         imgUrl = await StorageMethod.uploadImageToStorage(
-          'profileImage',
-          profilePic,
-        );
+            'profileImage', profilePic, studentId);
       }
-      String studentId = const Uuid().v1();
       final student = StudentDetails(
         timeStamp: Timestamp.now(),
         uid: uid,
@@ -67,9 +67,7 @@ class StudentServices {
       String imgUrl = '';
       if (profilePic != null) {
         imgUrl = await StorageMethod.uploadImageToStorage(
-          'profileImage',
-          profilePic,
-        );
+            'profileImage', profilePic, sid);
       }
       final student = StudentDetails(
         timeStamp: timestamp,
@@ -93,7 +91,9 @@ class StudentServices {
     return res;
   }
 
-  static void deleteStudent(String id) async {
+  static Future deleteStudent(String id) async {
     await students.doc(id).delete();
+    await StorageMethod.deleteImageFromStorage(
+        FirebaseAuth.instance.currentUser!.uid, id);
   }
 }

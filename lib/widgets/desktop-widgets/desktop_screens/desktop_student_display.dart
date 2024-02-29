@@ -100,7 +100,7 @@ class DesktopDisplayStudents extends StatelessWidget {
                                       ),
                                     );
                                   },
-                                  icon: Icon(
+                                  icon:const  Icon(
                                     Icons.edit,
                                     color: Colors.blue,
                                   ),
@@ -119,7 +119,7 @@ class DesktopDisplayStudents extends StatelessWidget {
                                       ),
                                     );
                                   },
-                                  icon: Icon(
+                                  icon:const  Icon(
                                     Icons.delete,
                                     color: Colors.red,
                                   ),

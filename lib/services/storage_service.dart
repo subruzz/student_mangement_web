@@ -11,8 +11,7 @@ class StorageMethod {
   static final FirebaseAuth auth = FirebaseAuth.instance;
   static final FirebaseFirestore firestore = FirebaseFirestore.instance;
   static Future<String> uploadImageToStorage(
-      String childName, Uint8List file) async {
-    String id = const Uuid().v1();
+      String childName, Uint8List file, String id) async {
     Reference ref =
         storage.ref().child(childName).child(auth.currentUser!.uid).child(id);
     UploadTask task =
@@ -22,9 +21,13 @@ class StorageMethod {
     return downloadURl;
   }
 
-  static Future<void> deleteImageFromStorage(String imagePath) async {
-    final Reference storageRef =
-        FirebaseStorage.instance.ref().child('StudentImages').child(imagePath);
+  static Future<void> deleteImageFromStorage(String uid, String imageId) async {
+    final Reference storageRef = storage
+        .ref()
+        .child('profileImage')
+        .child(auth.currentUser!.uid)
+        .child(imageId);
+    print(storageRef);
 
     try {
       await storageRef.delete();

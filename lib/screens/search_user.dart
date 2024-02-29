@@ -85,10 +85,20 @@ class _SearchUserState extends State<SearchUser> {
                                 : CircleAvatar(
                                     radius: 60,
                                     backgroundImage: NetworkImage(
-                                        foundStudents[index]['profilePicture']),
+                                      foundStudents[index]['profilePicture'],
+                                    ),
                                   ),
-                            title: Text(foundStudents[index]['name']),
-                            subtitle: Text(foundStudents[index]['batch']),
+                            title: Text(
+                              foundStudents[index]['name'],
+                              style: Theme.of(context).textTheme.labelSmall,
+                            ),
+                            subtitle: Text(
+                              foundStudents[index]['batch'],
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelSmall!
+                                  .copyWith(color: Colors.grey),
+                            ),
                           ),
                         ),
                       );
