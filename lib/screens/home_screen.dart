@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:studentmanagement/screens/add_student.dart';
-import 'package:studentmanagement/utils/responsive/responsive_widget.dart';
 import 'package:studentmanagement/screens/login_screen.dart';
+import 'package:studentmanagement/utils/responsive/responsive_widget.dart';
 import 'package:studentmanagement/screens/search_user.dart';
 import 'package:studentmanagement/widgets/desktop-widgets/desktop_screens/desktop_student_display.dart';
 import 'package:studentmanagement/widgets/helping-widgets/dialog.dart';
@@ -27,7 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (ctx) => CustomDialog(
               title: 'Are you sure you want to logout?',
               onClick: () {
-                _signOut();
+                _signOut().then((value) => Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (ctx) => const LoginPage()),
+                    (route) => false));
               },
             ));
   }
@@ -97,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: StreamBuilder(
         stream: students
             .where('tid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-            // .orderBy('timestamp', descending: true)
+            // .orderBy('timeStamp', descending: true)
             .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 class StorageMethod {
   static final FirebaseStorage storage = FirebaseStorage.instance;
@@ -17,7 +16,7 @@ class StorageMethod {
     UploadTask task =
         ref.putData(file, SettableMetadata(contentType: 'image/jpeg'));
     TaskSnapshot snap = await task;
-    String downloadURl = await snap.ref.getDownloadURL();
+    final downloadURl = await snap.ref.getDownloadURL();
     return downloadURl;
   }
 

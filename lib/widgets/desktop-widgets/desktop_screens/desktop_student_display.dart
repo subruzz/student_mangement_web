@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:studentmanagement/screens/add_student.dart';
 import 'package:studentmanagement/screens/student_details.dart';
 import 'package:studentmanagement/services/student_services.dart';
@@ -37,7 +36,7 @@ class DesktopDisplayStudents extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Container(
-                padding: EdgeInsets.all(15.0),
+                padding:const  EdgeInsets.all(15.0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,

@@ -8,7 +8,7 @@ import 'package:uuid/uuid.dart';
 
 class StudentServices {
   static String res = 'some error occured';
-  static final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+  // static final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
   static final CollectionReference students =
       FirebaseFirestore.instance.collection('studentCollection');
   static Future<String> addStuent(

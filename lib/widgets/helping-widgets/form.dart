@@ -130,7 +130,7 @@ class _MyTextfieldsState extends State<LoginForm> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (ctx) => ForgotPasswordPage()));
+                          builder: (ctx) =>const  ForgotPasswordPage()));
                 },
                 child: const Text(
                   'Forgot Password?',

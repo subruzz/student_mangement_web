@@ -6,8 +6,7 @@ import 'package:studentmanagement/services/student_services.dart';
 import 'package:studentmanagement/widgets/helping-widgets/dialog.dart';
 
 class MobileDisplayStudents extends StatelessWidget {
-  const MobileDisplayStudents({Key? key, required this.student})
-      : super(key: key);
+  const MobileDisplayStudents({super.key, required this.student});
 
   final List<DocumentSnapshot> student;
 
